@@ -1,106 +1,65 @@
-# Automated CI/CD Pipeline with Security (Jenkins + Docker)
+# CI/CD Pipeline with Integrated Security Scanning
 
-This repository contains a starter Python app and a Jenkins pipeline that implements:
-- GitHub webhook-triggered build
-- Unit tests with `pytest`
-- SonarQube static analysis + Quality Gate enforcement
-- Trivy filesystem and Docker image vulnerability scans
-- Docker image build and push to Docker Hub
-- Deployment to AWS EC2 over SSH
+A fully automated CI/CD pipeline for a Python Flask application with security scanning, code quality analysis, and containerized deployment on AWS.
 
-## Tech Stack
-- Jenkins
-- Docker
-- Git + GitHub
-- SonarQube
-- Trivy
-- Python (Flask)
-- AWS EC2
+## Overview
+
+This project demonstrates a production-ready CI/CD workflow that automatically builds, tests, scans, and deploys a containerized web application. Every code push triggers an automated pipeline that ensures code quality and security before deployment.
+
+## What I Built
+
+**Infrastructure & Pipeline**
+- Set up Jenkins on AWS EC2 as the CI/CD orchestrator
+- Configured automated GitHub webhooks to trigger builds on every push
+- Deployed SonarQube for continuous code quality monitoring
+- Integrated Trivy for container vulnerability scanning
+
+**Automation & Deployment**
+- Containerized the Flask application with Docker
+- Implemented automatic versioning and tagging of Docker images
+- Automated deployment workflow: stops old container, pulls new image, and deploys updated version
+- Configured all services (Jenkins, SonarQube, App Server) to work together seamlessly
+
+**Security & Quality**
+- Static code analysis with SonarQube to catch code smells and maintainability issues
+- Container image scanning with Trivy to identify vulnerabilities before deployment
+- Pipeline fails if critical security issues are detected
+
+## Pipeline Workflow
+
+1. **Source Code Checkout** - Jenkins pulls latest code from GitHub
+2. **Code Quality Analysis** - SonarQube scans for code quality and technical debt
+3. **Build & Tag** - Docker image is built with automated version tagging
+4. **Security Scan** - Trivy scans the Docker image for vulnerabilities
+5. **Deploy** - If all checks pass, old container is stopped and new version is deployed
+
+## Technologies Used
+
+- **Jenkins** - CI/CD automation server
+- **Docker** - Containerization platform
+- **SonarQube** - Code quality and security analysis
+- **Trivy** - Container vulnerability scanner
+- **Git & GitHub** - Version control and webhooks
+- **Python (Flask)** - Application framework
+- **AWS EC2** - Cloud infrastructure (Ubuntu)
 
 ## Repository Structure
-- `app/main.py`: Python web app
-- `tests/test_app.py`: Unit test
-- `Dockerfile`: Container build file
-- `Jenkinsfile`: CI/CD pipeline
-- `scripts/deploy.sh`: Remote deployment script for EC2
-- `sonar-project.properties`: SonarQube project settings
 
-## Jenkins Prerequisites
-Install plugins:
-- Pipeline
-- Git
-- GitHub Integration
-- Docker Pipeline
-- SonarQube Scanner
-- SSH Agent
-- Workspace Cleanup
-- ANSI Color
-
-Configure global tools:
-- JDK named `jdk17`
-- Sonar Scanner named `sonar-scanner`
-- SonarQube server named `sonarqube-server`
-
-Add credentials:
-- `dockerhub-creds` (username/password or token)
-- `ec2-ssh-key` (SSH private key)
-
-## Required Edits Before First Run
-Update `Jenkinsfile`:
-- `GITHUB_REPO_URL` -> your GitHub repository URL, e.g. `https://github.com/lokesh123/cicd-secured.git`
-- `GITHUB_BRANCH` -> branch to build, usually `main`
-- `GITHUB_CREDENTIALS_ID` -> Jenkins credential ID for private repos (leave empty for public repos)
-- `DOCKERHUB_REPO` -> your Docker Hub image repo, e.g. `lokesh123/cicd-secured-app`
-- `EC2_HOST` -> your EC2 SSH target, e.g. `ec2-user@ec2-11-22-33-44.compute-1.amazonaws.com`
-
-Update `sonar-project.properties`:
-- `sonar.projectKey`
-- `sonar.projectName`
-
-## AWS EC2 Setup
-Run once on EC2:
-
-```bash
-sudo yum update -y || sudo apt update -y
-sudo yum install -y docker || sudo apt install -y docker.io
-sudo systemctl enable --now docker
-sudo usermod -aG docker ec2-user || true
+```
+cicd-secured/
+├── Jenkinsfile                 # Pipeline definition
+├── Dockerfile                  # Container image specification
+├── sonar-project.properties    # SonarQube configuration
+├── app/
+│   └── main.py                # Flask application
+├── requirements.txt            # Python dependencies
+└── tests/                     # Test files
 ```
 
-Then log out and log in again.
+## Key Achievements
 
-Allow inbound traffic in security group:
-- `22/tcp` for SSH (restricted source)
-- `80/tcp` for app access
-
-## GitHub Webhook
-Set webhook in your GitHub repository:
-- Payload URL: `http://<jenkins-host>:8080/github-webhook/`
-- Content type: `application/json`
-- Events: `Just the push event`
-
-## Pipeline Stages
-1. Checkout
-2. Unit Tests
-3. SonarQube Analysis
-4. Quality Gate
-5. Trivy Filesystem Scan
-6. Build Docker Image
-7. Trivy Image Scan
-8. Push Image
-9. Deploy to EC2
-
-## Local Quick Test
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pytest -q
-python app/main.py
-```
-
-## Security Upgrades You Can Add Next
-- `pip-audit` stage for Python dependency CVEs
-- Container image signing (cosign)
-- Least-privilege IAM + restricted security groups
-- Branch protection requiring CI checks before merge
+✅ Fully automated pipeline from code push to production deployment  
+✅ Zero-downtime deployments with container orchestration  
+✅ Integrated security scanning at the container level  
+✅ Code quality gates to maintain high standards  
+✅ Multi-server architecture (Jenkins, SonarQube, App Server)
