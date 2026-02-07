@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                        trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}
                     """
                 }
             }
