@@ -25,13 +25,49 @@ This project demonstrates a production-ready CI/CD workflow that automatically b
 - Container image scanning with Trivy to identify vulnerabilities before deployment
 - Pipeline fails if critical security issues are detected
 
-## Pipeline Workflow
+## Workflow Diagram
 
-1. **Source Code Checkout** - Jenkins pulls latest code from GitHub
-2. **Code Quality Analysis** - SonarQube scans for code quality and technical debt
-3. **Build & Tag** - Docker image is built with automated version tagging
-4. **Security Scan** - Trivy scans the Docker image for vulnerabilities
-5. **Deploy** - If all checks pass, old container is stopped and new version is deployed
+```mermaid
+graph TB
+    Developer["👨‍💻 Developer<br/>Pushes Code"]
+    GitHub["📦 GitHub<br/>Repository"]
+    Webhook["🔔 Webhook Trigger"]
+    Jenkins["🔧 Jenkins Server<br/>(CI/CD Orchestrator)"]
+    
+    Checkout["1️⃣ Checkout Code<br/>Pull from GitHub"]
+    SonarQube["2️⃣ Code Quality Scan<br/>SonarQube Analysis"]
+    Build["3️⃣ Build Docker Image<br/>Tag with Version"]
+    Trivy["4️⃣ Security Scan<br/>Trivy Vulnerability Check"]
+    Deploy["5️⃣ Deploy Container<br/>Stop Old → Start New"]
+    
+    SonarServer["☁️ SonarQube Server"]
+    AppServer["🖥️ App Server<br/>Docker Runtime"]
+    Success["✅ Deployment Success<br/>App Live"]
+    Fail["❌ Pipeline Failed<br/>Issues Found"]
+    
+    Developer --> GitHub
+    GitHub --> Webhook
+    Webhook --> Jenkins
+    Jenkins --> Checkout
+    Checkout --> SonarQube
+    SonarQube --> SonarServer
+    SonarServer --> |Quality Check Pass| Build
+    SonarServer --> |Quality Issues| Fail
+    Build --> Trivy
+    Trivy --> |No Vulnerabilities| Deploy
+    Trivy --> |Vulnerabilities Found| Fail
+    Deploy --> AppServer
+    AppServer --> Success
+    
+    style Developer fill:#964B00 
+    style GitHub fill:#FFA500
+    style Jenkins fill:#000080
+    style SonarServer fill:#341539
+    style AppServer fill: #556B2F
+    style Success fill:#008000
+    style Fail fill:#FF0000
+```
+
 
 ## Technologies Used
 
