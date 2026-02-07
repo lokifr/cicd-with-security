@@ -40,7 +40,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                        trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                        mkdir -p .trivycache
+                        docker run --rm \
+                          -v /var/run/docker.sock:/var/run/docker.sock \
+                          -v ${WORKSPACE}/.trivycache:/root/.cache/ \
+                          aquasec/trivy:0.57.1 image \
+                          --exit-code 1 --severity HIGH,CRITICAL \
+                          ${DOCKER_IMAGE}:${BUILD_NUMBER}
                     """
                 }
             }
