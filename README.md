@@ -56,6 +56,8 @@ cicd-secured/
 └── tests/                     # Test files
 ```
 
+
+
 ## Key Achievements
 
 ✅ Fully automated pipeline from code push to production deployment  
@@ -63,3 +65,6 @@ cicd-secured/
 ✅ Integrated security scanning at the container level  
 ✅ Code quality gates to maintain high standards  
 ✅ Multi-server architecture (Jenkins, SonarQube, App Server)
+
+## Documentation formatting and structure assisted by AI tools
+
