@@ -87,9 +87,6 @@ Code quality analysis results from SonarQube.
 - **Code Smells:** 0 ✅
 
 **Overall Status:** ✅ Quality Gate Passed  
-**Project:** Python CI/CD Application  
-**Version:** 1.0  
-**Last Analysis:** February 7, 2026 at 10:14 PM
 
 ---
 
